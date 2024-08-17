@@ -1,0 +1,45 @@
+import React, { useState, useEffect } from 'react';
+
+const MyComponent = () => {
+  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Crear usuario
+    fetch('https://playground.4geeks.com/todo/users/loool', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: 'nuevoUsuario',
+        email: 'usuario@example.com'
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUser(data);
+        // Obtener datos del usuario creado
+        return fetch(`https://playground.4geeks.com/todo/users/${data.id}`, {
+          method: 'GET',
+        });
+      })
+      .then(response => response.json())
+      .then(userData => setUserData(userData))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  return (
+    <div>
+      {/* Aquí irá el contenido de tu componente */}
+      {userData && (
+        <div>
+          <h1>{userData.username}</h1>
+          <p>{userData.email}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MyComponent;
