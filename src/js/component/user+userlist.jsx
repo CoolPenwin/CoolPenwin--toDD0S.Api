@@ -69,7 +69,7 @@ const MyComponent = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        label: "prueba 1",
+        label: "oh vaia creo que este no es mi proyecto",
         is_done: false
       }),
     })

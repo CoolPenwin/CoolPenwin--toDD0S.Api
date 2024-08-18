@@ -1,45 +1,171 @@
+Para lograr lo que necesitas, vamos a desglosar el problema en varias partes y asegurarnos de que cada componente funcione correctamente. Aquí hay algunos pasos que puedes seguir:
+
+Crear una lista desplegable de usuarios: Necesitamos obtener la lista de usuarios y mostrarla en un select para que el usuario pueda elegir.
+
+Actualizar el estado de is_done en el servidor: Necesitamos una función que envíe una solicitud PUT al servidor para actualizar el estado de un todo.
+
+Eliminar un todo: Necesitamos una función que envíe una solicitud DELETE al servidor para eliminar un todo.
+
+Vamos a empezar con la lista desplegable de usuarios. Primero, necesitas obtener la lista de usuarios desde el servidor y almacenarla en el estado. Luego, puedes mostrar esta lista en un select.
+
+Paso 1: Obtener y mostrar la lista de usuarios
 import React, { useState, useEffect } from 'react';
 
-const MyComponent = () => {
-  const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null);
+const ToDoList = () => {
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
 
   useEffect(() => {
-    // Crear usuario
-    fetch('https://playground.4geeks.com/todo/users/loool', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: 'nuevoUsuario',
-        email: 'usuario@example.com'
-      }),
-    })
+    fetch('https://playground.4geeks.com/todo/users')
       .then(response => response.json())
-      .then(data => {
-        setUser(data);
-        // Obtener datos del usuario creado
-        return fetch(`https://playground.4geeks.com/todo/users/${data.id}`, {
-          method: 'GET',
-        });
-      })
-      .then(response => response.json())
-      .then(userData => setUserData(userData))
-      .catch(error => console.error('Error:', error));
+      .then(data => setUsers(data))
+      .catch(error => console.error('Error fetching users:', error));
   }, []);
 
+  const handleUserChange = (e) => {
+    setSelectedUser(e.target.value);
+    // Aquí puedes agregar lógica para obtener los todos del usuario seleccionado
+  };
+
   return (
-    <div>
-      {/* Aquí irá el contenido de tu componente */}
-      {userData && (
-        <div>
-          <h1>{userData.username}</h1>
-          <p>{userData.email}</p>
+    <div className="text-center">
+      <div className="container">
+        <h1>toDos</h1>
+        <div className="user-select">
+          <select value={selectedUser} onChange={handleUserChange}>
+            <option value="">Selecciona un usuario</option>
+            {users.map(user => (
+              <option key={user.id} value={user.name}>{user.name}</option>
+            ))}
+          </select>
         </div>
-      )}
+        {/* Resto del código */}
+      </div>
     </div>
   );
 };
 
-export default MyComponent;
+export default ToDoList;
+Paso 2: Actualizar el estado de is_done en el servidor
+Vamos a crear una función toggleTaskCompletion que envíe una solicitud PUT al servidor para actualizar el estado de un todo.
+
+const toggleTaskCompletion = (index) => {
+  const updatedTasks = [...tasks];
+  updatedTasks[index].completed = !updatedTasks[index].completed;
+
+  const todoId = updatedTasks[index].id;
+  const userUrl = `https://playground.4geeks.com/todo/todos/${todoId}`;
+
+  fetch(userUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      label: updatedTasks[index].text,
+      is_done: updatedTasks[index].completed,
+    }),
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al actualizar el todo');
+      }
+      return response.json();
+    })
+    .then(data => {
+      setTasks(updatedTasks);
+      console.log('Todo actualizado:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+};
+Paso 3: Eliminar un todo
+Vamos a crear una función deleteTask que envíe una solicitud DELETE al servidor para eliminar un todo.
+
+const deleteTask = (index) => {
+  const todoId = tasks[index].id;
+  const userUrl = `https://playground.4geeks.com/todo/todos/${todoId}`;
+
+  fetch(userUrl, {
+    method: 'DELETE',
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al eliminar el todo');
+      }
+      setTasks(tasks.filter((_, i) => i !== index));
+      console.log('Todo eliminado');
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+};
+Integrar todo en el componente
+Finalmente, integramos todo en el componente ToDoList.
+
+return (
+  <div className="text-center">
+    <div className="container">
+      <h1>toDos</h1>
+      <div className="user-select">
+        <select value={selectedUser} onChange={handleUserChange}>
+          <option value="">Selecciona un usuario</option>
+          {users.map(user => (
+            <option key={user.id} value={user.name}>{user.name}</option>
+          ))}
+        </select>
+      </div>
+      <div className="todo-list">
+        <input
+          type="text"
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="Añadir nueva tarea"
+        />
+        {tasks.length === 0 && (
+          <div
+            className="alert alert-danger d-flex align-items-center mt-3"
+            role="alert"
+          >
+            <i className="fa-solid fa-triangle-exclamation"></i>
+            <div className="ms-1">No hay tareas, añadir tareas</div>
+          </div>
+        )}
+        <ul>
+          {tasks.map((task, index) => (
+            <li key={index} className="todo-item ">
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => toggleTaskCompletion(index)}
+              />
+              <span
+                className="todo-text"
+                style={{
+                  textDecoration: task.completed ? "line-through" : "none",
+                }}
+              >
+                {task.text}
+              </span>
+              <button
+                type="button"
+                style={{ border: "none", background: "none" }}
+                className="col-1 btn btn-outline-light"
+                onClick={() => deleteTask(index)}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            </li>
+          ))}
+        </ul>
+        <div className="footer">
+          <span>{countIncompleteTasks()} items left</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);

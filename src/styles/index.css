@@ -1,4 +1,3 @@
-
 /* 
 
     You can write your own styles here...
@@ -10,3 +9,123 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  text-align: center;
+}
+
+h1 {
+  font-size: 100px;
+  color: rgba(175, 47, 47, 0.15);
+  margin: 0;
+}
+
+.todo-list {
+  background: white;
+  box-shadow: 0px 10px 0px -4px white, 0px 20px 0px -8px #f1f1f1,
+    0px 20px 20px 20px rgba(175, 47, 47, 0.15);
+
+  width: 300px;
+  margin-top: 20px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  box-sizing: border-box;
+  font-size: 24px;
+  border-bottom: 1px solid #ededed;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 16px;
+  border-bottom: 1px solid #ededed;
+  font-size: 24px;
+}
+
+.footer::after,
+.footer::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 10px;
+  background: #ddd;
+}
+
+.footer::after {
+  bottom: -10px;
+  z-index: -1;
+}
+
+.footer::before {
+  bottom: -20px;
+  z-index: -2;
+  background: #ccc; /* Un color diferente para distinguir */
+}
+.delete-icon {
+  display: none; /* Oculto por defecto */
+  /* position: absolute; */
+  right: 16px; /* Ajusta según sea necesario */
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Alinea verticalmente los elementos */
+  padding: 16px;
+  border-bottom: 1px solid #ededed;
+  font-size: 24px;
+  position: relative; /* Necesario para posicionar el icono */
+}
+
+.todo-text {
+  flex-grow: 1; /* Permite que el texto ocupe el espacio disponible */
+  text-align: center; /* Centra el texto horizontalmente */
+}
+.todo-item:hover .delete-icon {
+  display: inline; /* Aparece al hacer hover */
+}
+
+.fit-content {
+  width: fit-content;
+  height: fit-content; /* Si también quieres ajustar la altura */
+}
+.excuse-moi {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+/* footer */
+.logo {
+  cursor: pointer;
+  transition: 0.2s;
+  transition: box-shadow 0.3s ease, transform 0.3s ease, opacity 2s ease;
+  transform: scale(1);
+  background: linear-gradient(to bottom right, 105, 165, 214, 105, 165, 214);
+}
+.logo:hover {
+  transform: scale(1.9) translateZ(20px);
+}
+
+/* /fin/footer  */
