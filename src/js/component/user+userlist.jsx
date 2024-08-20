@@ -231,6 +231,7 @@ const MyComponent = () => {
             ))}
           </select>
         )}
+        <button onClick={handleDeleteUser}>Eliminar Usuario</button>
         {todos.length > 0 && (
           <ul>
             {todos.map((todo, index) => (
@@ -257,7 +258,7 @@ const MyComponent = () => {
           />
           <button onClick={handleAddTodo}>Añadir</button>
         </div>
-        <button onClick={handleDeleteUser}>Eliminar Usuario</button>
+        
       </div>
     </React.Fragment>
   );
