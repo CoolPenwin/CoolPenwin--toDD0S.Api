@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ExcuseMoi_Button from "./BotonVista+Mejoras.jsx";
 import OseaVisualTodDo from "./userGayer.jsx";
 import MyComponent from "./user+userlist.jsx";
@@ -14,6 +14,13 @@ const Home = () => {
     const nextIndex = (currentIndex + 1) % environments.length;
     setCurrentEnvironment(environments[nextIndex]);
   };
+
+  useEffect(() => {
+    // Remover todas las clases del body
+    document.body.classList.remove('body-default', 'body-improvements', 'body-testing');
+    // Agregar la clase correspondiente al currentEnvironment
+    document.body.classList.add(`body-${currentEnvironment}`);
+  }, [currentEnvironment]);
 
   return (
     <>

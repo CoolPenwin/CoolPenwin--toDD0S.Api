@@ -230,11 +230,16 @@ const MyComponent = () => {
           <input
             type="text"
             value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-            onKeyDown={handleAddTodo}
             placeholder="Nuevo todo"
+            
+            onChange={(e) => setNewTodo(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddTodo();
+              }
+            }}
           />
-          <button onClick={handleAddTodo}>Añadir Todo</button>
+          
         </div>
       </div>
     </React.Fragment>
