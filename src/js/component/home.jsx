@@ -7,6 +7,8 @@ import ExcuseMoi_Button from './BotonVistaMejoras.jsx';
 // import MyComponent from "./user ";
 import MyComponent from "./user+userlist.jsx";
 import Footer from "./footer.jsx";
+import ToDoList from "./aaapi.v2.jsx";
+import VisualTodDo from "./user .jsx";
 
 //create your first component
 const Home = () => {
@@ -34,9 +36,12 @@ const toggleImprovements = () => {
 
   {showImprovements && (
     <>
+    <div className="text-center">
     //Extras ocultos
-    
+    {/* <ToDoList/> */}
+    <VisualTodDo/>
     <Footer />
+    </div>
     </>
   )}
 
