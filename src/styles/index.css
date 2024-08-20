@@ -157,6 +157,7 @@ li {
 {
   background-color: #212529;
   color: rgb(3, 255, 58);
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .body-testing a,
@@ -166,10 +167,40 @@ li {
 .body-testing input,
 .body-testing select {
   color: rgb(3, 255, 58);
+  font-family: 'Courier New', Courier, monospace;
 }
 
+.body-testing a,
+.body-testing h1,
 
 
+.body-testing input, .body-testing select {
+  background-color: black;
+  color: rgb(3, 255, 58);
+  border: 1px solid rgb(3, 255, 58);
+}
+
+.body-testing button {
+  background-color: black;
+  color: rgb(3, 255, 58);
+  border: 1px solid rgb(3, 255, 58);
+  cursor: pointer;
+}
+
+.body-testing button:hover {
+  background-color: rgb(3, 255, 58);
+  color: black;
+}
+
+button.ethical {
+  background-color: blue;
+  color: white;
+}
+
+button.evil {
+  background-color: red;
+  color: white;
+}
 
 /* /fin/environments */
 

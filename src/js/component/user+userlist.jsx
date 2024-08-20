@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 const MyComponent = () => {
-  // const [username, setUsername] = useState("CoolPenwin");
   const [username, setUsername] = useState("loool");
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const [todos, setTodos] = useState([]);
-  const [newTodo, setNewTodo] = useState(""); // Estado para el nuevo todo
+  const [newTodo, setNewTodo] = useState("");
+  const [mode, setMode] = useState("ethical"); // Estado para el modo
 
   useEffect(() => {
     if (username) {
@@ -50,7 +50,6 @@ const MyComponent = () => {
         .then(usersData => {
           setUsers(usersData.users);
           console.log("Lista de usuarios obtenida:", usersData.users);
-          // Añadir el nuevo todo después de verificar o crear el usuario
           addInitialTodo();
         })
         .catch(error => {
@@ -80,7 +79,7 @@ const MyComponent = () => {
       return response.json();
     })
     .then(data => {
-      setTodos([...todos, data]); // Añadir el nuevo todo al estado
+      setTodos([...todos, data]);
       console.log("Nuevo todo creado:", data);
     })
     .catch(error => {
@@ -110,29 +109,12 @@ const MyComponent = () => {
         console.error("Error:", error.message);
       });
   };
-      
 
-  // function handleTodoChange(id) {
-  //   fetch(${apiUrl}/todos/${id}, { method: 'DELETE' })
-  //   .then(response => {
-  //     if (response.ok) {
-  //           getTasks();
-  //         } else {
-  //           response.json().then(data => {
-  //             console.error('Error deleting task:', data);
-  //           });
-  //         }
-  //       })
-  //       .catch(error => {
-  //         console.error('Error deleting task:', error);
-  //       });
-  //     }
-  
-      const handleTodoChange = (index) => {
+  const handleTodoChange = (index) => {
     const updatedTodos = [...todos];
     updatedTodos[index].is_done = !updatedTodos[index].is_done;
 
-    const userUrl = `https://playground.4geeks.com/todos/${todo.id}`;
+    const userUrl = `https://playground.4geeks.com/todos/${updatedTodos[index].id}`;
     
     fetch(userUrl, {
       method: 'PUT',
@@ -184,8 +166,8 @@ const MyComponent = () => {
       return response.json();
     })
     .then(data => {
-      setTodos([...todos, data]); // Añadir el nuevo todo al estado
-      setNewTodo(""); // Limpiar el input
+      setTodos([...todos, data]);
+      setNewTodo("");
       console.log("Nuevo todo creado:", data);
     })
     .catch(error => {
@@ -194,12 +176,47 @@ const MyComponent = () => {
     });
   };
 
-  console.log("Renderizando componente con usuarios:", users);
+  const handleDeleteUser = () => {
+    const userUrl = `https://playground.4geeks.com/todo/users/${username}`;
+    
+    fetch(userUrl, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al eliminar el usuario');
+      }
+      setUsername("");
+      setTodos([]);
+      console.log("Usuario eliminado");
+    })
+    .catch(error => {
+      setError(error.message);
+      console.error("Error:", error.message);
+    });
+  };
 
   return (
     <React.Fragment>
       <div>
         {error && <p>{error}</p>}
+        <div>
+          <button 
+            className={mode === "ethical" ? "ethical" : ""}
+            onClick={() => setMode("ethical")}
+          >
+            Ethical
+          </button>
+          <button 
+            className={mode === "evil" ? "evil" : ""}
+            onClick={() => setMode("evil")}
+          >
+            Evil
+          </button>
+        </div>
         {username && (
           <div>
             <h1>{username}</h1>
@@ -218,10 +235,10 @@ const MyComponent = () => {
           <ul>
             {todos.map((todo, index) => (
               <li key={index}>
-                
                 <span style={{ textDecoration: todo.is_done ? 'line-through' : 'none' }}>
                   {todo.label}
                 </span>
+                <button onClick={() => handleTodoChange(index)}>Toggle</button>
               </li>
             ))}
           </ul>
@@ -231,7 +248,6 @@ const MyComponent = () => {
             type="text"
             value={newTodo}
             placeholder="Nuevo todo"
-            
             onChange={(e) => setNewTodo(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -239,8 +255,9 @@ const MyComponent = () => {
               }
             }}
           />
-          
+          <button onClick={handleAddTodo}>Añadir</button>
         </div>
+        <button onClick={handleDeleteUser}>Eliminar Usuario</button>
       </div>
     </React.Fragment>
   );
