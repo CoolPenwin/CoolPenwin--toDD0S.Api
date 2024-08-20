@@ -36,21 +36,21 @@ export default ExcuseMoi_Button;
 //   toggleImprovements={toggleImprovements}
 //   />
 
-//  {!showImprovements && (
+//  {!showImprovements && ( //esto se muestra por defecto y se oculta al presionar boton
 //   <div>
 //     <componente principal />
 //     {/* Otros componentes básicos */}
 //     </div>
-//   )} //esto se muestra por defecto y se oculta al presionar boton
+//   )} 
 
-//   {showImprovements && (
+//   {showImprovements && (  //esto esta oculto por defecto y se muestra al presionar boton
 //     <>
 //     //Extras ocultos
 //     <componente con extras />
 //     <otros extras />
 //     <Footer />
 //     </>
-//   )}//esto esta oculto por defecto y se muestra al presionar boton
+//   )}
 
 // </>
 // );

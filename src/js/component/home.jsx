@@ -8,7 +8,8 @@ import ExcuseMoi_Button from './BotonVistaMejoras.jsx';
 import MyComponent from "./user+userlist.jsx";
 import Footer from "./footer.jsx";
 import ToDoList from "./aaapi.v2.jsx";
-import VisualTodDo from "./user .jsx";
+import VisualTodDo from "./user.jsx";
+import OseaVisualTodDo from "./userGayer.jsx";
 
 //create your first component
 const Home = () => {
@@ -27,7 +28,9 @@ const toggleImprovements = () => {
  {!showImprovements && (
   <div>
     <div className="text-center">
-			<MyComponent/>
+      // gayer list
+      <OseaVisualTodDo/>
+			{/* <MyComponent/>funciona  */}
 			{/* <ToDoApi/> */}
 			<Footer/>
 		</div>
@@ -39,7 +42,9 @@ const toggleImprovements = () => {
     <div className="text-center">
     //Extras ocultos
     {/* <ToDoList/> */}
-    <VisualTodDo/>
+			<MyComponent/>funciona 
+
+    {/* <VisualTodDo/> */}
     <Footer />
     </div>
     </>

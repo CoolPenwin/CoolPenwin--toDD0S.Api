@@ -69,8 +69,8 @@ const MyComponent = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        label: "oh vaia creo que este no es mi proyecto",
-        is_done: false
+        label: "vuestra merced ha sido jackeada ",
+        is_done: true
       }),
     })
     .then(response => {
@@ -218,11 +218,7 @@ const MyComponent = () => {
           <ul>
             {todos.map((todo, index) => (
               <li key={index}>
-                <input
-                  type="checkbox"
-                  checked={todo.is_done}
-                  onChange={() => handleTodoChange(index)}
-                />
+                
                 <span style={{ textDecoration: todo.is_done ? 'line-through' : 'none' }}>
                   {todo.label}
                 </span>
@@ -235,6 +231,7 @@ const MyComponent = () => {
             type="text"
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
+            onKeyDown={handleAddTodo}
             placeholder="Nuevo todo"
           />
           <button onClick={handleAddTodo}>Añadir Todo</button>
