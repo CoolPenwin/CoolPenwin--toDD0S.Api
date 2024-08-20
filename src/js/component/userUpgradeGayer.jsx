@@ -6,7 +6,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
-const OseaVisualTodDo = () => {
+const SuperVisualTodDo = () => {
   // const [username, setUsername] = useState("CoolPenwin");
   const [username, setUsername] = useState("loool");
   const [error, setError] = useState(null);
@@ -218,11 +218,19 @@ const OseaVisualTodDo = () => {
     return count;
   };
 
-  const handleTodoChange = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].donE = !updatedTodos[index].donE;
+  const handleTodoChange = (id) => {
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, is_done: !todo.is_done };
+      }
+      return todo;
+    });
 
-    const userUrl = `https://playground.4geeks.com/todo/todos/${updatedTodos[index].id}`;
+    // Actualizar el estado local antes de hacer la llamada a la API
+    setTodos(updatedTodos);
+
+    const updatedTodo = updatedTodos.find((todo) => todo.id === id);
+    const userUrl = `https://playground.4geeks.com/todo/todos/${id}`;
 
     fetch(userUrl, {
       method: "PUT",
@@ -230,8 +238,8 @@ const OseaVisualTodDo = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        label: updatedTodos[index].label,
-        donE: updatedTodos[index].donE,
+        label: updatedTodo.label,
+        is_done: updatedTodo.is_done,
       }),
     })
       .then((response) => {
@@ -241,7 +249,6 @@ const OseaVisualTodDo = () => {
         return response.json();
       })
       .then((data) => {
-        setTodos(updatedTodos);
         console.log("Todo actualizado:", data);
       })
       .catch((error) => {
@@ -280,9 +287,34 @@ const OseaVisualTodDo = () => {
       });
   };
 
-  const todosDone = todos.filter(todo => todo.is_done);
-  const todosNotDone = todos.filter(todo => !todo.is_done);
+  const deleteToDD0S = () => {
+    const deletePromises = todos.map((todo) => {
+      const userUrl = `https://playground.4geeks.com/todo/todos/${todo.id}`;
 
+      return fetch(userUrl, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    });
+
+    Promise.all(deletePromises)
+      .then((responses) => {
+        const allSuccessful = responses.every((response) => response.ok);
+        if (!allSuccessful) {
+          throw new Error("Error al eliminar uno o más todos");
+        }
+        setTodos([]); // Vaciar la lista de todos
+        console.log("Todos los todos han sido eliminados");
+      })
+      .catch((error) => {
+        setError(error.message);
+        console.error("Error:", error.message);
+      });
+  };
+  const todosPending = todos.filter((todo) => !todo.is_done);
+  const todosCompleted = todos.filter((todo) => todo.is_done);
   return (
     <div className="text-center">
       <div className="container">
@@ -310,75 +342,93 @@ const OseaVisualTodDo = () => {
             </div>
           )}
 
-          {todos.length > 0 && (
-            <div>
-              <h3>Tareas Completadas</h3>
-              <ul>
-                {todosDone.map((todo, index) => (
-                  <li key={index}>
-                    <input
-                      type="checkbox"
-                      checked={todo.is_done}
-                      onChange={() => handleTodoChange(index)}
-                    />
-                    <span
-                      style={{
-                        textDecoration: todo.is_done ? "line-through" : "none",
-                      }}
-                    >
-                      {todo.label}
-                    </span>
-                    <button
-                      type="button"
-                      style={{ border: "none", background: "none" }}
-                      className="col-1 btn btn-outline-light -danger-text-emphasis"
-                      onClick={() => deleteToDo(todo.id)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className="-danger-text-emphasis"
-                      />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-
-              <h3>Tareas Pendientes</h3>
-              <ul>
-                {todosNotDone.map((todo, index) => (
-                  <li key={index}>
-                    <input
-                      type="checkbox"
-                      checked={todo.is_done}
-                      onChange={() => handleTodoChange(index)}
-                    />
-                    <span
-                      style={{
-                        textDecoration: todo.is_done ? "line-through" : "none",
-                      }}
-                    >
-                      {todo.label}
-                    </span>
-                    <button
-                      type="button"
-                      style={{ border: "none", background: "none" }}
-                      className="col-1 btn btn-outline-light -danger-text-emphasis"
-                      onClick={() => deleteToDo(todo.id)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className="-danger-text-emphasis"
-                      />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+{todos.length > 0 && (
+  <div className="row">
+    <div className="col">
+      <h3>Por Hacer ({todosPending.length})</h3>
+      <div style={{ maxHeight: "200px", overflowY: "auto" }}>
+        <ul>
+          {todosPending.map((todo) => (
+            <li key={todo.id}>
+              <input
+                type="checkbox"
+                checked={todo.is_done}
+                onChange={() => handleTodoChange(todo.id)}
+              />
+              <span
+                style={{
+                  textDecoration: todo.is_done ? "line-through" : "none",
+                }}
+              >
+                {todo.label}
+              </span>
+              <button
+                type="button"
+                style={{ border: "none", background: "none" }}
+                className="col-1 btn btn-outline-light -danger-text-emphasis"
+                onClick={() => deleteToDo(todo.id)}
+              >
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  className="-danger-text-emphasis"
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div className="col">
+      <h3>Completadas ({todosCompleted.length})</h3>
+      <div style={{ maxHeight: "200px", overflowY: "auto" }}>
+        <ul>
+          {todosCompleted.map((todo) => (
+            <li key={todo.id}>
+              <input
+                type="checkbox"
+                checked={todo.is_done}
+                onChange={() => handleTodoChange(todo.id)}
+              />
+              <span
+                style={{
+                  textDecoration: todo.is_done ? "line-through" : "none",
+                }}
+              >
+                {todo.label}
+              </span>
+              <button
+                type="button"
+                style={{ border: "none", background: "none" }}
+                className="col-1 btn btn-outline-light -danger-text-emphasis"
+                onClick={() => deleteToDo(todo.id)}
+              >
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  className="-danger-text-emphasis"
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+)}
 
           <div className="footer">
             <span>
-              {todos.length} items left
+              {todos.length} items on list
+              <button
+                type="button"
+                style={{ border: "none", background: "none" }}
+                className="col-1 btn btn-outline-light -danger-text-emphasis"
+                onClick={deleteToDD0S}
+              >
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  className="-danger-text-emphasis"
+                />
+              </button>
             </span>
           </div>
         </div>
@@ -386,4 +436,5 @@ const OseaVisualTodDo = () => {
     </div>
   );
 };
-export default OseaVisualTodDo;
+
+export default SuperVisualTodDo;

@@ -33,6 +33,11 @@ h2 {
   color: rgba(175, 47, 47, 0.15);
   margin: 0;
 }
+h3 {
+  font-size: 24px;
+  color: rgba(175, 47, 47, 0.15);
+  margin: 0;
+}
 
 .todo-list {
   background: white;
@@ -71,6 +76,15 @@ li {
   border-bottom: 1px solid #ededed;
   font-size: 24px;
   position: relative; 
+}
+.todo-list .row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.todo-list .col {
+  flex: 1;
+  margin: 0 10px;
 }
 
 .footer::after,

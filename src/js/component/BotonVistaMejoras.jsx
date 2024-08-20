@@ -1,9 +1,15 @@
 import React from "react";
 
-const ExcuseMoi_Button = ({ showImprovements, toggleImprovements }) => {
+const ExcuseMoi_Button = ({ currentEnvironment, toggleEnvironment }) => {
+  const buttonText = {
+    default: "Mostrar Mejoras",
+    improvements: "Mostrar Testing",
+    testing: "Mostrar Default"
+  };
+
   return (
-    <button className="excuse-moi" onClick={toggleImprovements}>
-      {showImprovements ? "Ocultar Mejoras" : "Mostrar Mejoras"}
+    <button className="excuse-moi" onClick={toggleEnvironment}>
+      {buttonText[currentEnvironment]}
     </button>
   );
 };
@@ -57,3 +63,58 @@ export default ExcuseMoi_Button;
 // };
 
 // export default Home;
+
+
+
+
+
+
+import React, { useState } from "react";
+import ExcuseMoi_Button from './BotonVistaMejoras.jsx';
+
+const Home = () => {
+  const [currentEnvironment, setCurrentEnvironment] = useState("default");
+
+  const toggleEnvironment = () => {
+    const environments = ["default", "improvements", "testing"];
+    const currentIndex = environments.indexOf(currentEnvironment);
+    const nextIndex = (currentIndex + 1) % environments.length;
+    setCurrentEnvironment(environments[nextIndex]);
+  };
+
+  return (
+    <>
+      <ExcuseMoi_Button
+        currentEnvironment={currentEnvironment}
+        toggleEnvironment={toggleEnvironment}
+      />
+
+      {currentEnvironment === "default" && (
+        <div>
+          <componente principal />
+          {/* Otros componentes básicos */}
+        </div>
+      )}
+
+      {currentEnvironment === "improvements" && (
+        <>
+          {/* Extras ocultos */}
+          <componente con extras />
+          <otros extras />
+          <Footer />
+        </>
+      )}
+
+      {currentEnvironment === "testing" && (
+        <>
+          {/* Componentes de testing */}
+          <componente de testing />
+          <otros componentes de testing />
+          <Footer />
+        </>
+      )}
+    </>
+  );
+};
+
+export default Home;
